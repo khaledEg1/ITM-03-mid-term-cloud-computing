@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud Computing — Study Guide</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a0a;
+  --surface:#151514;
+  --surface2:#1e1e1d;
+  --surface3:#282827;
+  --border:rgba(255,255,255,0.12);
+  --border2:rgba(255,255,255,0.2);
+  --text:#f5f5f5;
+  --text2:#d0ccc5;
+  --text3:#888783;
+  --accent:#a29bff;
+  --accent-bg:#2d2952;
+  --accent-text:#e8e4ff;
+  --green-bg:#1a3a1a;
+  --green-text:#7dd77d;
+  --green-b:#4a8a4a;
+  --red-bg:#3a1a1a;
+  --red-text:#ff8080;
+  --red-b:#8a4a4a;
+  --yellow-bg:#3a3a1a;
+  --yellow-text:#ffd966;
+  --yellow-b:#8a7a2a;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh;}
+header{background:var(--surface);border-bottom:1px solid var(--border2);padding:0 2rem;display:flex;align-items:stretch;position:sticky;top:0;z-index:100;gap:2rem;}
+.header-brand{display:flex;align-items:center;gap:12px;padding:1rem 0;}
+.header-icon{width:32px;height:32px;background:var(--accent-bg);border:1px solid rgba(139,132,232,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.header-icon svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:1.8;}
+.header-title{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.01em;line-height:1.2;}
+.header-sub{font-size:11px;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;font-weight:500;}
+.tab-bar{display:flex;margin-left:auto;}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;padding:0 1.1rem;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;transition:color .15s,border-color .15s;}
+.tab-btn:hover{color:var(--text2);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+.section{display:none;}.section.active{display:block;}
+.cat-hdr{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin:2rem 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.ref-grid{display:flex;flex-direction:column;gap:8px;}
+.qa-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.qa-q{padding:14px 16px 0;display:flex;align-items:flex-start;gap:10px;}
+.qa-lbl{background:var(--accent-bg);color:var(--accent-text);font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;flex-shrink:0;margin-top:3px;letter-spacing:.04em;white-space:nowrap;}
+.qa-lbl.mcq-lbl{background:var(--yellow-bg);color:var(--yellow-text);}
+.qa-qt{font-size:14px;font-weight:500;color:var(--text);line-height:1.5;flex:1;}
+.qa-a{padding:10px 16px 14px;font-size:14px;color:var(--text2);line-height:1.7;}
+.qa-a ul,.qa-a ol{padding-left:1.3rem;margin:4px 0;}.qa-a li{margin-bottom:3px;}
+.qa-a strong{color:var(--text);font-weight:500;}
+.cmp-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+.cmp-tbl th{background:var(--surface2);padding:8px 12px;text-align:left;font-weight:500;font-size:12px;color:var(--text2);border-bottom:1px solid var(--border2);}
+.cmp-tbl td{padding:7px 12px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text2);}
+.cmp-tbl tr:last-child td{border-bottom:none;}
+.ref-mcq-opts{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.ref-opt{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text3);}
+.ref-opt.is-correct{border-color:var(--green-b);background:var(--green-bg);color:var(--green-text);}
+.ref-opt .ltr{font-weight:600;font-size:11px;flex-shrink:0;margin-top:1px;min-width:14px;}
+.ref-correct-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-b);border-radius:6px;font-size:11px;font-weight:600;padding:3px 9px;margin-bottom:8px;}
+.quiz-top{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.start-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s;}
+.start-btn:hover{opacity:.85;}
+.start-btn:disabled{opacity:.4;cursor:default;}
+.quiz-type-selector{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.type-card{display:flex;align-items:center;gap:10px;padding:12px 16px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;background:var(--surface);}
+.type-card:hover{border-color:var(--accent);background:var(--accent-bg);}
+.type-card.selected{border-color:var(--accent);background:var(--accent-bg);}
+.type-card input{cursor:pointer;width:18px;height:18px;accent-color:var(--accent);}
+.type-card label{cursor:pointer;font-size:14px;font-weight:500;flex:1;}
+.rand-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer;user-select:none;}
+.tog{width:36px;height:20px;background:var(--surface3);border:1px solid var(--border2);border-radius:10px;position:relative;flex-shrink:0;transition:background .2s;}
+.tog::after{content:'';position:absolute;width:14px;height:14px;background:var(--text3);border-radius:50%;top:2px;left:2px;transition:left .2s,background .2s;}
+.tog.on{background:var(--accent);border-color:var(--accent);}.tog.on::after{left:18px;background:#fff;}
+.quiz-pg{margin-left:auto;font-size:13px;color:var(--text3);font-weight:500;}
+.pb-wrap{height:3px;background:var(--surface3);border-radius:3px;margin-bottom:1.5rem;overflow:hidden;}
+.pb{height:100%;background:var(--accent);border-radius:3px;transition:width .3s;}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem;}
+.q-num{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;}
+.q-type-badge{display:inline-block;background:var(--yellow-bg);color:var(--yellow-text);font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;letter-spacing:.04em;margin-bottom:10px;}
+.q-type-badge.mcq-badge{background:var(--accent-bg);color:var(--accent-text);}
+.q-txt{font-size:15px;font-weight:500;margin-bottom:1.1rem;line-height:1.5;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1px solid var(--border2);border-radius:8px;cursor:pointer;font-size:14px;color:var(--text);background:var(--surface);text-align:left;line-height:1.5;width:100%;transition:background .1s,border-color .1s;}
+.opt:hover:not([disabled]):not(.selected){background:var(--surface2);border-color:var(--accent);}
+.opt[disabled]{cursor:default;}
+.opt .ltr{font-size:11px;font-weight:600;color:var(--text3);flex-shrink:0;margin-top:2px;min-width:14px;}
+.opt.selected{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-text);}
+.opt.selected .ltr{color:var(--accent-text);}
+.opt.correct{background:var(--green-bg);border-color:var(--green-b);color:var(--green-text);}
+.opt.correct .ltr{color:var(--green-text);}
+.opt.wrong{background:var(--red-bg);border-color:var(--red-b);color:var(--red-text);}
+.opt.wrong .ltr{color:var(--red-text);}
+.open-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--text);font-family:inherit;line-height:1.5;resize:vertical;min-height:90px;}
+.open-input:focus{outline:none;border-color:var(--accent);}
+.open-input:disabled{opacity:.6;}
+.model-answer{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.7;margin-top:10px;}
+.model-answer-lbl{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.model-answer ul,.model-answer ol{padding-left:1.2rem;margin:4px 0;}.model-answer li{margin-bottom:3px;}
+.fb{margin-top:10px;font-size:13px;padding:9px 13px;border-radius:8px;line-height:1.5;}
+.fb-ok{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-b);}
+.fb-no{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-b);}
+.q-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px;}
+.nav-btn{background:none;border:1px solid var(--border2);border-radius:8px;padding:8px 18px;font-size:14px;color:var(--text2);cursor:pointer;transition:background .1s,color .1s;}
+.nav-btn:hover{background:var(--surface2);color:var(--text);}
+.nav-btn:disabled{opacity:.3;cursor:default;}
+.submit-btn{background:var(--accent);color:#0d0c1e;border:none;border-radius:8px;padding:9px 22px;font-size:14px;font-weight:600;cursor:pointer;}
+.submit-btn:hover{opacity:.88;}
+.submit-btn:disabled{opacity:.35;cursor:default;}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:3rem 2rem;text-align:center;}
+.score-pct{font-size:58px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:6px;letter-spacing:-.02em;}
+.score-lbl{font-size:15px;color:var(--text2);margin-bottom:1.5rem;}
+.badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.bdg{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500;}
+.bdg-g{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-b);}
+.bdg-r{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-b);}
+.bdg-a{background:var(--accent-bg);color:var(--accent-text);}
+.bdg-y{background:var(--yellow-bg);color:var(--yellow-text);}
+.retry-btn{background:var(--accent);color:#0d0c1e;border:none;border-radius:8px;padding:10px 30px;font-size:14px;font-weight:600;cursor:pointer;}
+.retry-btn:hover{opacity:.88;}
+.placeholder{text-align:center;padding:4rem 1rem;color:var(--text3);font-size:14px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-brand">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 10.5A6.5 6.5 0 0 1 9.5 4h5A6.5 6.5 0 0 1 21 10.5a5 5 0 0 1-5 5H8a5 5 0 0 1-5-4.5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="19" x2="12" y2="22" stroke-linecap="round"/><line x1="8" y1="22" x2="16" y2="22" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div class="header-title">Cloud Computing</div>
+      <div class="header-sub">Study Guide &amp; Quiz</div>
+    </div>
+  </div>
+  <nav class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('ref',this)">Reference</button>
+    <button class="tab-btn" onclick="switchTab('quiz',this)">Quiz yourself</button>
+  </nav>
+</header>
+<div class="container">
+  <div id="sec-ref" class="section active">
+    <div class="ref-grid" id="ref-grid"></div>
+  </div>
+  <div id="sec-quiz" class="section">
+    <div id="quiz-setup" class="section-active">
+      <div class="quiz-mode-lbl" style="font-size:13px;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Select Quiz Types</div>
+      <div class="quiz-type-selector" id="type-selector"></div>
+      <div class="quiz-top">
+        <button class="start-btn" id="start-quiz-btn" onclick="startQuiz()" disabled>Start quiz</button>
+        <div class="rand-row" onclick="toggleRand()">
+          <div class="tog" id="tog"></div>
+          <span>Randomize order</span>
+        </div>
+        <div class="quiz-pg" id="quiz-pg"></div>
+      </div>
+    </div>
+    <div id="quiz-body" style="display:none;"><div class="placeholder">Press <strong style="color:var(--text2)">Start quiz</strong> to begin</div></div>
+  </div>
+</div>
+<script>
+var LTRS=['a','b','c','d'];
+
+var QA=[
+  {cat:"Fundamentals",q:"What is cloud computing?",a:"Cloud computing is the on-demand delivery of computing services such as servers, storage, databases, networking, software, and analytics over the internet. Instead of owning physical data centers, you rent technology services from a cloud provider."},
+  {cat:"Fundamentals",q:"What are the main types of services offered by cloud computing?",a:"The main services include servers, storage, databases, applications, networking, and software tools."},
+  {cat:"Fundamentals",q:"What were the main challenges of the before-cloud era for companies?",a:"<ul><li>They had to buy expensive servers and hardware upfront.</li><li>They needed dedicated IT staff to manage the hardware.</li><li>Scaling was difficult and slow. If demand increased, new machines had to be purchased. If demand decreased, those expensive machines remained unused.</li></ul>"},
+  {cat:"Fundamentals",q:"What are the key benefits of using cloud computing over traditional methods?",a:"<ul><li>Resources are available anytime.</li><li>Companies pay only for what they use.</li><li>Easy to increase or decrease resources based on current demand.</li></ul>"},
+  {cat:"Fundamentals",q:"What are the characteristics of cloud computing?",a:"<ul><li>On-demand self service</li><li>Broad network access</li><li>Resource pooling</li><li>Rapid elasticity</li><li>Measured service</li></ul>"},
+  {cat:"Fundamentals",q:"What are the advantages of cloud computing?",a:"<ul><li>Less cost</li><li>Speed</li><li>Scalability</li><li>Productivity</li><li>Reliability</li><li>Security</li></ul>"},
+  {cat:"History & Evolution",q:"Can you list the evolution of computing that led to cloud computing?",a:"<ol><li>Mainframe computers (shared by many users via terminals)</li><li>Personal Computers (PCs for individuals)</li><li>Local networks (computers connected together)</li><li>Local networks connected globally forming the Internet</li><li>Grid computing (distributed computing system)</li><li>Cloud computing (more scalable and simple)</li></ol>"},
+  {cat:"History & Evolution",q:"What is Grid Computing?",a:"Grid computing is a form of distributed computing. It creates a super virtual computer from a cluster of loosely coupled, geographically dispersed computers working together on large tasks (e.g., the SETI@home project)."},
+  {cat:"History & Evolution",q:"What are the cloud computing technologies?",a:"<ul><li>Virtualization</li><li>Service-oriented architecture</li><li>Grid computing</li><li>Utility computing</li></ul>"},
+  {cat:"Architecture",q:"What is cloud computing architecture?",a:"Cloud computing architecture refers to the components required for cloud computing: a front-end platform (the client), a back-end platform (servers, storage), and a network (Internet, Intranet, Intercloud)."},
+  {cat:"Architecture",q:"What is the front end of cloud architecture?",a:"The front end is the client-side part of a cloud computing system. It consists of interfaces and applications (like a web browser, mobile app, or desktop app) that users interact with to access the cloud."},
+  {cat:"Architecture",q:"What is the back end of cloud architecture?",a:"The back end is the actual cloud infrastructure managed by the provider. It includes:<ul><li>Servers: Physical or virtual machines that run applications.</li><li>Storage Systems: For storing user data.</li><li>Virtualization Layer: Creates virtual machines using hypervisors.</li><li>Management Software: Controls resource allocation, monitoring, and security.</li></ul>"},
+  {cat:"Architecture",q:"What is a cloud deployment model?",a:"A cloud deployment model defines where the cloud infrastructure lives, who owns and manages it, and how it is accessed."},
+  {cat:"Service Models",q:"What is Infrastructure as a Service (IaaS)?",a:"IaaS provides fundamental computing resources such as servers, virtual machines, storage, and networks on a pay-as-you-go basis. It is like renting the basic building blocks of IT."},
+  {cat:"Service Models",q:"What is Platform as a Service (PaaS)?",a:"PaaS offers a cloud environment for developers to build, test, and deploy applications. It includes the underlying infrastructure plus operating systems, middleware, and development tools, so developers do not need to manage the underlying hardware or software layers."},
+  {cat:"Service Models",q:"What is Software as a Service (SaaS)?",a:"SaaS delivers complete, ready-to-use software applications over the internet on a subscription basis. Users do not manage the infrastructure or platform; they just use the application. Examples include Salesforce, Microsoft 365, and Google Workspace."},
+  {cat:"Service Models",q:"What is dSaaS (Data-Storage-as-a-Service)?",a:"dSaaS provides storage services to the consumer, including the bandwidth requirements for that storage."},
+  {cat:"Service Models",q:"List some cloud services requirements.",a:"<ul><li>Better security</li><li>Better availability</li><li>Better performance</li><li>Dynamic resource allocation and deallocation</li><li>Resource reservation</li></ul>"},
+  {cat:"Deployment Models",q:"What is a Public Cloud?",a:"Services are owned and operated by a third-party provider. It offers lower costs and unlimited scalability but less security."},
+  {cat:"Deployment Models",q:"What is a Private Cloud?",a:"A cloud environment dedicated to one organization. It offers higher security, control, and customization."},
+  {cat:"Deployment Models",q:"What is Hybrid Cloud?",a:"A composition of two or more clouds (public, private, or community). Provides greater flexibility."},
+  {cat:"Deployment Models",q:"What is Community Cloud?",a:"A variant of a private cloud where the infrastructure is shared by several organizations with similar requirements."},
+  {cat:"Deployment Models",q:"What is Multi-Cloud?",a:"A multi-cloud strategy involves using multiple public cloud providers at the same time."},
+  {cat:"Deployment Models",q:"How do Public and Private Clouds compare?",a:'<table class="cmp-tbl"><thead><tr><th>Public Cloud</th><th>Private Cloud</th></tr></thead><tbody><tr><td>Owner is cloud provider or third party</td><td>Owner is the organization itself</td></tr><tr><td>Lower costs</td><td>Higher costs</td></tr><tr><td>Unlimited scalability</td><td>Limited scalability</td></tr><tr><td>Less security</td><td>Higher security</td></tr><tr><td>Testing is difficult</td><td>Testing is easier</td></tr><tr><td>Less management and control</td><td>More management and control</td></tr></tbody></table>'},
+  {cat:"Dynamic Infrastructure",q:"What is a Dynamic Infrastructure in cloud computing?",a:"A dynamic infrastructure is a modern model for managing data centers where hardware and software resources automatically respond to changes in demand. When workload increases, the system provisions more resources; when demand drops, it reduces them."},
+  {cat:"Dynamic Infrastructure",q:"What are the two main technologies used to achieve a dynamic infrastructure?",a:"<ol><li>Server Virtualization: Allows multiple virtual servers to run on a single physical server, leading to better hardware utilization.</li><li>Automated Management Tools: Software that automatically allocates resources, starts/stops servers, and manages capacity without human intervention.</li></ol>"},
+  {cat:"Dynamic Infrastructure",q:"What is load balancing?",a:"Distributing user requests across multiple servers to prevent overload."},
+  {cat:"Dynamic Infrastructure",q:"List the benefits of a dynamic infrastructure.",a:"<ul><li>Load balancing</li><li>Better server utilization</li><li>Reduced IT costs</li><li>Improved scalability</li><li>Improved availability</li></ul>"},
+  {cat:"Challenges & Concerns",q:"What are the main security and privacy concerns in cloud computing?",a:"When data is stored on remote servers managed by a provider, concerns arise about unauthorized access, data breaches, and data theft. Strong encryption, authentication, and security policies are required to mitigate these risks."},
+  {cat:"Challenges & Concerns",q:"What is vendor lock-in?",a:"Vendor lock-in occurs when an organization becomes dependent on a specific cloud provider, making it difficult or expensive to move applications and data to another provider due to differing technologies, platforms, and migration costs."},
+  {cat:"Challenges & Concerns",q:"List some issues and challenges in cloud computing.",a:"<ul><li>Security and privacy</li><li>Data loss</li><li>Downtime / service availability</li><li>Limited control</li><li>Vendor lock-in</li><li>Cost management</li></ul>"}
+];
+
+var MCQ=[
+  {cat:"Fundamentals",q:"What is the fundamental concept of cloud computing?",o:["Buying powerful hardware for your office","Using computing services over the internet on a pay-as-you-go basis","Storing all data on local external hard drives","Running software only on mainframe computers"],a:1},
+  {cat:"Fundamentals",q:"Which of the following is NOT typically a service provided by cloud computing?",o:["Servers and Storage","Networking","Physical delivery of hardware","Databases and Applications"],a:2},
+  {cat:"Fundamentals",q:"Before cloud computing, if a company's demand decreased, what was a major problem?",o:["They could easily return the servers for a refund","The expensive machines would often stay unused","The IT staff would have to work fewer hours","The software would automatically uninstall"],a:1},
+  {cat:"Fundamentals",q:"What is the key benefit of cloud computing's on-demand model?",o:["You have to predict your needs for the next five years","You can increase or decrease resources as needed, often automatically","You must sign a contract for a fixed amount of resources","You need to install new hardware every time your demand changes"],a:1},
+  {cat:"History & Evolution",q:"Which computing paradigm involves many users sharing powerful mainframes using dummy terminals?",o:["PC Computing","Grid Computing","Mainframe Computing","Client-Server Computing"],a:2},
+  {cat:"Architecture",q:"What is created by a hypervisor in the virtualization layer of cloud computing?",o:["Physical servers","Management software","Virtual machines","Network cables"],a:2},
+  {cat:"Architecture",q:"In cloud architecture, what is the front end?",o:["The physical data center where servers are located","The virtualization software used to create VMs","The client-side interface, like a web browser or mobile app","The management software that controls resource allocation"],a:2},
+  {cat:"History & Evolution",q:"What type of computing creates a super virtual computer from a cluster of loosely coupled, geographically dispersed computers?",o:["Parallel Computing","Grid Computing","Mainframe Computing","Peer-to-Peer (P2P) Computing"],a:1},
+  {cat:"Deployment Models",q:"Which deployment model is characterized by infrastructure shared among multiple tenants and owned by a third-party provider?",o:["Private Cloud","Community Cloud","Public Cloud","Hybrid Cloud"],a:2},
+  {cat:"Deployment Models",q:"A cloud environment dedicated exclusively to a single organization, offering higher security and control, is known as a:",o:["Public Cloud","Private Cloud","Multi-Cloud","Distributed Cloud"],a:1},
+  {cat:"Deployment Models",q:"A hybrid cloud is a composition of two or more clouds. What is its primary characteristic?",o:["It only uses public cloud providers","The combined clouds lose their individual identities","It is the most secure but least flexible option","The clouds remain unique entities but are bound together for data and application sharing"],a:3},
+  {cat:"Deployment Models",q:"Which statement accurately compares public and private clouds?",o:["Public clouds are more secure than private clouds","Private clouds generally have higher costs than public clouds","Public clouds have limited scalability compared to private clouds","Private clouds are owned by third-party providers"],a:1},
+  {cat:"Deployment Models",q:"Using AWS for storage, Google Cloud for ML, and Azure for active directory is an example of which strategy?",o:["Hybrid Cloud","Community Cloud","Multi-Cloud","Private Cloud"],a:2},
+  {cat:"Service Models",q:"Which cloud service model provides fundamental computing resources like virtual machines, storage, and networks?",o:["Software as a Service (SaaS)","Platform as a Service (PaaS)","Infrastructure as a Service (IaaS)","Data as a Service (dSaaS)"],a:2},
+  {cat:"Service Models",q:"A developer wants to build and deploy an application without managing the underlying OS, hardware, or middleware. Which service model is best?",o:["Infrastructure as a Service (IaaS)","Platform as a Service (PaaS)","Software as a Service (SaaS)","Anything as a Service (XaaS)"],a:1},
+  {cat:"Service Models",q:"Salesforce and Microsoft 365 are typical examples of which cloud service model?",o:["Infrastructure as a Service (IaaS)","Platform as a Service (PaaS)","Software as a Service (SaaS)","Storage as a Service (STaaS)"],a:2},
+  {cat:"Dynamic Infrastructure",q:"What is dynamic infrastructure in cloud computing?",o:["A static allocation of IT resources","A system where hardware and software can automatically respond to changes in demand","A network that is constantly being physically rebuilt","A type of server that cannot be virtualized"],a:1},
+  {cat:"Dynamic Infrastructure",q:"Which two key technologies enable a dynamic infrastructure?",o:["Mainframe computing and batch processing","Server virtualization and automated management tools","Physical servers and manual configuration","Peer-to-peer networking and client-server architecture"],a:1},
+  {cat:"Dynamic Infrastructure",q:"What is load balancing in the context of cloud computing?",o:["Distributing user requests across multiple servers to prevent overload","Ensuring all servers have the same amount of electrical power","Balancing the financial cost of different cloud services","A process for reducing the weight of physical servers"],a:0},
+  {cat:"Challenges & Concerns",q:"What is a major security concern when storing data in the cloud?",o:["The data is always stored on the user's local computer","The data is kept on remote servers, raising concerns about unauthorized access and data breaches","It is impossible to encrypt data in the cloud","Cloud providers never make backup copies of data"],a:1},
+  {cat:"Challenges & Concerns",q:"What does vendor lock-in mean in cloud computing?",o:["A contract that gives the user unlimited free services","When a cloud provider forces a user to buy specific hardware","When an organization becomes dependent on a specific provider, making it difficult to switch to another","A security feature that locks all data with a single key"],a:2},
+  {cat:"Challenges & Concerns",q:"Poorly managed cloud resources, such as leaving unused virtual machines running, can lead to:",o:["Guaranteed performance improvement","Unexpected and higher costs","Automatic deletion of data","Increased security"],a:1},
+  {cat:"Challenges & Concerns",q:"Slow internet connection leading to delays in data access and application performance is known as:",o:["Downtime","Latency","A data breach","Vendor lock-in"],a:1},
+  {cat:"Fundamentals",q:"What is the main difference between cloud computing and cloud services?",o:["There is no difference; the terms are exactly the same","Cloud computing is the architecture/enabling technology, while cloud services are the actual products delivered","Cloud services are the hardware, and cloud computing is the software","Cloud computing is for businesses only, and cloud services are for individuals"],a:1},
+  {cat:"Dynamic Infrastructure",q:"Which of the following is a characteristic of the dynamic infrastructure principle?",o:["Assigning a full physical server to only one application for better performance","Using a shared pool of IT resources and allocating them flexibly based on application needs","Requiring human intervention for every resource allocation change","Keeping all servers running at 100% capacity at all times"],a:1}
+];
+
+/* ── QUIZ TYPE SELECTOR ── */
+var selectedTypes={open:true,mcq:true};
+
+function buildTypeSelector(){
+  var sel=document.getElementById('type-selector');
+  sel.innerHTML='';
+  var types=[
+    {id:'open',label:'Open Answer Questions',desc:'Written responses'},
+    {id:'mcq',label:'Multiple Choice (MCQ)',desc:'Select one answer'}
+  ];
+  types.forEach(function(t){
+    var card=document.createElement('div');
+    card.className='type-card selected';
+    card.innerHTML='<input type="checkbox" id="cb-'+t.id+'" checked onchange="updateTypeSelection(\''+t.id+'\')"><label for="cb-'+t.id+'">'+t.label+'</label>';
+    sel.appendChild(card);
+  });
+}
+
+function updateTypeSelection(type){
+  selectedTypes[type]=!selectedTypes[type];
+  var hasSelection=selectedTypes.open||selectedTypes.mcq;
+  document.getElementById('start-quiz-btn').disabled=!hasSelection;
+  var cards=document.querySelectorAll('.type-card');
+  cards.forEach(function(c,i){
+    var chk=c.querySelector('input');
+    if(chk.checked)c.classList.add('selected');
+    else c.classList.remove('selected');
+  });
+}
+/* ── REFERENCE ── */
+function buildRef(){
+  var g=document.getElementById('ref-grid');
+  var catOrder=[], catMap={};
+  function reg(cat,item){
+    if(!catMap[cat]){catMap[cat]=[];catOrder.push(cat);}
+    catMap[cat].push(item);
+  }
+  var qn=0,mn=0;
+  QA.forEach(function(d){reg(d.cat,{type:'qa',data:d,n:++qn});});
+  MCQ.forEach(function(d){reg(d.cat,{type:'mcq',data:d,n:++mn});});
+
+  catOrder.forEach(function(cat){
+    var hdr=document.createElement('div');
+    hdr.className='cat-hdr';hdr.textContent=cat;g.appendChild(hdr);
+    catMap[cat].forEach(function(entry){
+      var card=document.createElement('div');card.className='qa-card';
+      if(entry.type==='qa'){
+        card.innerHTML='<div class="qa-q"><span class="qa-lbl">Q'+entry.n+'</span><span class="qa-qt">'+entry.data.q+'</span></div><div class="qa-a">'+entry.data.a+'</div>';
+      } else {
+        var opts='<div class="ref-mcq-opts">';
+        entry.data.o.forEach(function(o,i){
+          opts+='<div class="ref-opt'+(i===entry.data.a?' is-correct':'')+'"><span class="ltr">'+LTRS[i]+'.</span><span>'+o+'</span></div>';
+        });
+        opts+='</div>';
+        card.innerHTML='<div class="qa-q"><span class="qa-lbl mcq-lbl">MCQ '+entry.n+'</span><span class="qa-qt">'+entry.data.q+'</span></div>'+
+          '<div class="qa-a"><div class="ref-correct-badge">&#10003; Correct: '+LTRS[entry.data.a].toUpperCase()+'</div>'+opts+'</div>';
+      }
+      g.appendChild(card);
+    });
+  });
+}
+
+/* ── TABS ── */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('sec-'+name).classList.add('active');
+}
+
+/* ── QUIZ ── */
+var rand=false,order=[],cur=0,state=[],ITEMS=[];
+
+function buildItems(){
+  var arr=[];
+  if(selectedTypes.open){QA.forEach(function(_,i){arr.push({type:'open',idx:i});});}
+  if(selectedTypes.mcq){MCQ.forEach(function(_,i){arr.push({type:'mcq',idx:i});});}
+  return arr;
+}
+
+function toggleRand(){rand=!rand;document.getElementById('tog').classList.toggle('on',rand);}
+
+function startQuiz(){
+  ITEMS=buildItems();
+  if(ITEMS.length===0){alert('Please select at least one quiz type');return;}
+  order=ITEMS.map(function(_,i){return i;});
+  if(rand){for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}}
+  cur=0;
+  state=order.map(function(){return{answered:false,selected:null,text:''};});
+  document.getElementById('quiz-setup').style.display='none';
+  document.getElementById('quiz-body').style.display='block';
+  renderQ();
+}
+
+function renderQ(){
+  var total=order.length;
+  document.getElementById('quiz-pg').textContent=(cur+1)+' / '+total;
+  var pos=order[cur],item=ITEMS[pos],st=state[cur];
+  var data=item.type==='open'?QA[item.idx]:MCQ[item.idx];
+  var isMCQ=item.type==='mcq';
+  var pct=Math.round((cur/total)*100);
+
+  var h='<div class="pb-wrap"><div class="pb" style="width:'+pct+'%"></div></div>'+
+    '<div class="q-card">'+
+    '<div class="q-num">Question '+(cur+1)+' of '+total+'</div>'+
+    '<div class="q-type-badge '+(isMCQ?'mcq-badge':'')+'">'+( isMCQ?'Multiple choice':'Open answer')+'</div>'+
+    '<div class="q-txt">'+data.q+'</div>';
+
+  if(isMCQ){
+    h+='<div class="opts">';
+    data.o.forEach(function(o,i){
+      var cls='opt';
+      if(st.answered){if(i===data.a)cls+=' correct';else if(i===st.selected)cls+=' wrong';}
+      else if(i===st.selected)cls+=' selected';
+      h+='<button class="'+cls+'" '+(st.answered?'disabled':'')+' onclick="pickMCQ('+i+')"><span class="ltr">'+LTRS[i]+'</span><span>'+o+'</span></button>';
+    });
+    h+='</div>';
+    if(st.answered){var ok=st.selected===data.a;h+='<div class="fb '+(ok?'fb-ok':'fb-no')+'">'+(ok?'✓ Correct!':'✗ Correct answer: '+data.o[data.a])+'</div>';}
+  } else {
+    h+='<textarea class="open-input" id="open-txt" placeholder="Write your answer here..." '+(st.answered?'disabled':'')+'>'+esc(st.text)+'</textarea>';
+    if(st.answered){h+='<div class="model-answer"><div class="model-answer-lbl">Model answer</div>'+data.a+'</div>';}
+  }
+  h+='</div>';
+
+  var prev='<button class="nav-btn" onclick="move(-1)" '+(cur===0?'disabled':'')+'>← Previous</button>';
+  var right='';
+  if(!st.answered){
+    var dis=(isMCQ&&st.selected===null)?'disabled':'';
+    right='<button class="submit-btn" onclick="submitCur()" '+dis+'>Submit</button>';
+  } else if(cur<total-1){
+    right='<button class="nav-btn" onclick="move(1)">Next →</button>';
+  } else {
+    right='<button class="submit-btn" onclick="showScore()">See results</button>';
+  }
+  h+='<div class="q-nav">'+prev+right+'</div>';
+  document.getElementById('quiz-body').innerHTML=h;
+
+  if(!st.answered&&!isMCQ){
+    var ta=document.getElementById('open-txt');
+    if(ta)ta.addEventListener('input',function(){state[cur].text=ta.value;});
+  }
+}
+
+function pickMCQ(i){if(state[cur].answered)return;state[cur].selected=i;renderQ();}
+
+function submitCur(){
+  if(state[cur].answered)return;
+  if(!ITEMS[order[cur]]){return;}
+  var item=ITEMS[order[cur]];
+  if(item.type==='open'){var ta=document.getElementById('open-txt');if(ta)state[cur].text=ta.value;}
+  state[cur].answered=true;renderQ();
+}
+
+function move(d){cur+=d;renderQ();}
+
+function showScore(){
+  var total=order.length,mc=0,mt=0,oa=0,ot=0;
+  order.forEach(function(pos,ci){
+    var item=ITEMS[pos],st=state[ci];
+    if(item.type==='mcq'){mt++;if(st.answered&&st.selected===MCQ[item.idx].a)mc++;}
+    else{ot++;if(st.answered&&st.text.trim().length>0)oa++;}
+  });
+  var pct=mt>0?Math.round((mc/mt)*100):0;
+  var grade=pct>=90?'Excellent!':pct>=70?'Good job!':pct>=50?'Keep studying!':'Keep practicing!';
+  document.getElementById('quiz-pg').textContent='';
+  document.getElementById('quiz-body').innerHTML=
+    '<div class="score-card">'+
+    '<div class="score-pct">'+pct+'%</div>'+
+    '<div class="score-lbl">Score — '+grade+'</div>'+
+    '<div class="badges">'+
+    '<span class="bdg bdg-g">✓ '+mc+' correct</span>'+
+    '<span class="bdg bdg-r">✗ '+(mt-mc)+' wrong</span>'+
+    '<span class="bdg bdg-a">'+mt+' MCQs</span>'+
+    '<span class="bdg bdg-y">'+oa+' / '+ot+' open answered</span>'+
+    '</div><button class="retry-btn" onclick="resetToSetup()">Try again</button></div>';
+}
+
+function resetToSetup(){
+  document.getElementById('quiz-setup').style.display='block';
+  document.getElementById('quiz-body').style.display='none';
+  document.getElementById('quiz-pg').textContent='';
+  rand=false;
+  document.getElementById('tog').classList.remove('on');
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+buildRef();
+buildTypeSelector();
+</script>
+</body>
+</html>
