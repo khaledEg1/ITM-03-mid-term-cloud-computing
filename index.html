@@ -259,33 +259,37 @@ function updateTypeSelection(type){
 /* ── REFERENCE ── */
 function buildRef(){
   var g=document.getElementById('ref-grid');
-  var catOrder=[], catMap={};
-  function reg(cat,item){
-    if(!catMap[cat]){catMap[cat]=[];catOrder.push(cat);}
-    catMap[cat].push(item);
-  }
-  var qn=0,mn=0;
-  QA.forEach(function(d){reg(d.cat,{type:'qa',data:d,n:++qn});});
-  MCQ.forEach(function(d){reg(d.cat,{type:'mcq',data:d,n:++mn});});
-
-  catOrder.forEach(function(cat){
-    var hdr=document.createElement('div');
-    hdr.className='cat-hdr';hdr.textContent=cat;g.appendChild(hdr);
-    catMap[cat].forEach(function(entry){
-      var card=document.createElement('div');card.className='qa-card';
-      if(entry.type==='qa'){
-        card.innerHTML='<div class="qa-q"><span class="qa-lbl">Q'+entry.n+'</span><span class="qa-qt">'+entry.data.q+'</span></div><div class="qa-a">'+entry.data.a+'</div>';
-      } else {
-        var opts='<div class="ref-mcq-opts">';
-        entry.data.o.forEach(function(o,i){
-          opts+='<div class="ref-opt'+(i===entry.data.a?' is-correct':'')+'"><span class="ltr">'+LTRS[i]+'.</span><span>'+o+'</span></div>';
-        });
-        opts+='</div>';
-        card.innerHTML='<div class="qa-q"><span class="qa-lbl mcq-lbl">MCQ '+entry.n+'</span><span class="qa-qt">'+entry.data.q+'</span></div>'+
-          '<div class="qa-a"><div class="ref-correct-badge">&#10003; Correct: '+LTRS[entry.data.a].toUpperCase()+'</div>'+opts+'</div>';
-      }
-      g.appendChild(card);
+  
+  // Add Open-Ended Questions section
+  var hdr1=document.createElement('div');
+  hdr1.className='cat-hdr';
+  hdr1.textContent='Open-Ended Questions';
+  g.appendChild(hdr1);
+  
+  QA.forEach(function(d,idx){
+    var card=document.createElement('div');
+    card.className='qa-card';
+    card.innerHTML='<div class="qa-q"><span class="qa-lbl">Q'+(idx+1)+'</span><span class="qa-qt">'+d.q+'</span></div><div class="qa-a">'+d.a+'</div>';
+    g.appendChild(card);
+  });
+  
+  // Add MCQ section
+  var hdr2=document.createElement('div');
+  hdr2.className='cat-hdr';
+  hdr2.textContent='Multiple Choice Questions';
+  g.appendChild(hdr2);
+  
+  MCQ.forEach(function(d,idx){
+    var card=document.createElement('div');
+    card.className='qa-card';
+    var opts='<div class="ref-mcq-opts">';
+    d.o.forEach(function(o,i){
+      opts+='<div class="ref-opt'+(i===d.a?' is-correct':'')+'"><span class="ltr">'+LTRS[i]+'.</span><span>'+o+'</span></div>';
     });
+    opts+='</div>';
+    card.innerHTML='<div class="qa-q"><span class="qa-lbl mcq-lbl">MCQ '+(idx+1)+'</span><span class="qa-qt">'+d.q+'</span></div>'+
+      '<div class="qa-a"><div class="ref-correct-badge">✓ Correct: '+LTRS[d.a].toUpperCase()+'</div>'+opts+'</div>';
+    g.appendChild(card);
   });
 }
 
