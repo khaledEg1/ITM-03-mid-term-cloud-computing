@@ -18,8 +18,15 @@ A comprehensive interactive study guide and quiz for cloud computing fundamental
 
 You can access the interactive study guide here:
 
-- **🌐 Live Link**: https://khaledEg1.github.io/ITM-03-mid-term-cloud-computing/
-- **📄 Direct Link**: https://raw.githubusercontent.com/khaledEg1/ITM-03-mid-term-cloud-computing/main/index.html (use with a browser)
+- **🌐 Live Link (jsDelivr CDN - Working!)**: https://cdn.jsdelivr.net/gh/khaledEg1/ITM-03-mid-term-cloud-computing@main/index.html
+- **📄 GitHub Pages** (after enabling in Settings): https://khaledEg1.github.io/ITM-03-mid-term-cloud-computing/
+
+**To enable GitHub Pages:**
+1. Go to your repository Settings
+2. Scroll to "Pages" section (left sidebar)
+3. Set Source to "Deploy from a branch"
+4. Select `main` branch and `/ (root)` folder
+5. Save - your GitHub Pages link will be active in a few minutes!
 
 ## ✨ Features
 
