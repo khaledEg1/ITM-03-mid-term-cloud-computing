@@ -389,9 +389,19 @@ function renderQ(){
 
   if(!st.answered&&!isMCQ){
     var ta=document.getElementById('open-txt');
-    if(ta)ta.addEventListener('input',function(){state[cur].text=ta.value;});
+    if(ta){
+      ta.addEventListener('input',function(){state[cur].text=ta.value;});
+      ta.addEventListener('keydown',function(e){if(e.ctrlKey&&e.key==='Enter')submitCur();});
+    }
   }
 }
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&document.getElementById('quiz-body').style.display!=='none'&&ITEMS&&ITEMS.length>0){
+    var pos=order[cur],item=ITEMS[pos],st=state[cur];
+    if(st&&!st.answered&&item.type==='mcq'&&st.selected!==null)submitCur();
+  }
+});
 
 function pickMCQ(i){if(state[cur].answered)return;state[cur].selected=i;renderQ();}
 
