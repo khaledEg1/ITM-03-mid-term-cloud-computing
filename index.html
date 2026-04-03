@@ -122,6 +122,10 @@ header{background:var(--surface);border-bottom:1px solid var(--border2);padding:
 .retry-btn{background:var(--accent);color:#0d0c1e;border:none;border-radius:8px;padding:10px 30px;font-size:14px;font-weight:600;cursor:pointer;}
 .retry-btn:hover{opacity:.88;}
 .placeholder{text-align:center;padding:4rem 1rem;color:var(--text3);font-size:14px;}
+.mark-btn{background:none;border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.mark-btn:hover{border-color:var(--accent);color:var(--accent);}
+.mark-btn.marked{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-text);}
+.question-actions{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;justify-content:center;}
 @media(max-width:768px){
   .container{padding:1.5rem 1rem;}
   body{font-size:13px;}
@@ -314,7 +318,7 @@ function switchTab(name,btn){
 }
 
 /* ── QUIZ ── */
-var rand=false,order=[],cur=0,state=[],ITEMS=[];
+var rand=false,order=[],cur=0,state=[],ITEMS=[],marked=[],isMarkedMode=false;
 
 function buildItems(){
   var arr=[];
@@ -331,7 +335,8 @@ function startQuiz(){
   order=ITEMS.map(function(_,i){return i;});
   if(rand){for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}}
   cur=0;
-  state=order.map(function(){return{answered:false,selected:null,text:''};});
+  state=order.map(function(){return{answered:false,selected:null,text:'',marked:false};});
+  isMarkedMode=false;
   document.getElementById('quiz-setup').style.display='none';
   document.getElementById('quiz-body').style.display='block';
   renderQ();
@@ -367,6 +372,7 @@ function renderQ(){
   }
   h+='</div>';
 
+  var markBtn='<button class="mark-btn '+(state[cur].marked?'marked':'')+'" onclick="markQuestion()">📌 '+(state[cur].marked?'Marked':'Mark for review')+'</button>';
   var prev='<button class="nav-btn" onclick="move(-1)" '+(cur===0?'disabled':'')+'>← Previous</button>';
   var right='';
   if(!st.answered){
@@ -378,6 +384,7 @@ function renderQ(){
     right='<button class="submit-btn" onclick="showScore()">See results</button>';
   }
   h+='<div class="q-nav">'+prev+right+'</div>';
+  h+='<div class="question-actions">'+markBtn+'</div>';
   document.getElementById('quiz-body').innerHTML=h;
 
   if(!st.answered&&!isMCQ){
@@ -399,15 +406,20 @@ function submitCur(){
 function move(d){cur+=d;renderQ();}
 
 function showScore(){
-  var total=order.length,mc=0,mt=0,oa=0,ot=0;
+  var total=order.length,mc=0,mt=0,oa=0,ot=0,markedCount=0;
   order.forEach(function(pos,ci){
     var item=ITEMS[pos],st=state[ci];
+    if(st.marked)markedCount++;
     if(item.type==='mcq'){mt++;if(st.answered&&st.selected===MCQ[item.idx].a)mc++;}
     else{ot++;if(st.answered&&st.text.trim().length>0)oa++;}
   });
   var pct=mt>0?Math.round((mc/mt)*100):0;
   var grade=pct>=90?'Excellent!':pct>=70?'Good job!':pct>=50?'Keep studying!':'Keep practicing!';
   document.getElementById('quiz-pg').textContent='';
+  var buttons='<button class="retry-btn" onclick="resetToSetup()">Try again</button>';
+  if(markedCount>0){
+    buttons+='<button class="retry-btn" style="background:var(--accent);margin-left:8px;" onclick="startMarkedQuiz()">Review marked ('+markedCount+')</button>';
+  }
   document.getElementById('quiz-body').innerHTML=
     '<div class="score-card">'+
     '<div class="score-pct">'+pct+'%</div>'+
@@ -417,7 +429,7 @@ function showScore(){
     '<span class="bdg bdg-r">✗ '+(mt-mc)+' wrong</span>'+
     '<span class="bdg bdg-a">'+mt+' MCQs</span>'+
     '<span class="bdg bdg-y">'+oa+' / '+ot+' open answered</span>'+
-    '</div><button class="retry-btn" onclick="resetToSetup()">Try again</button></div>';
+    '</div>'+buttons+'</div>';
 }
 
 function resetToSetup(){
@@ -426,6 +438,25 @@ function resetToSetup(){
   document.getElementById('quiz-pg').textContent='';
   rand=false;
   document.getElementById('tog').classList.remove('on');
+}
+
+function markQuestion(){
+  state[cur].marked=!state[cur].marked;
+  renderQ();
+}
+
+function startMarkedQuiz(){
+  var markedIndices=[];
+  state.forEach(function(s,i){if(s.marked)markedIndices.push(i);});
+  if(markedIndices.length===0){alert('No questions marked');return;}
+  
+  order=markedIndices;
+  cur=0;
+  state=order.map(function(){return{answered:false,selected:null,text:'',marked:false};});
+  isMarkedMode=true;
+  document.getElementById('quiz-setup').style.display='none';
+  document.getElementById('quiz-body').style.display='block';
+  renderQ();
 }
 
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
